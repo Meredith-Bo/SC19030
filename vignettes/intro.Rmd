@@ -61,6 +61,7 @@ constraintMat <- function( m, maxplace){
                    m-maxplace,m,byrow=TRUE))
   )
   Amat <- t(A)
+  Amat
 }
 ```
 
@@ -78,6 +79,7 @@ solveWeights <- function(m, Fn, lower, upper, Dmat, dvec){
   w.hat <- sapply( w.hat, max0)
   wsum <- sum(w.hat)
   w.hat <- w.hat / wsum
+  w.hat
 }	
 ```
 
@@ -125,6 +127,7 @@ maxWeight <- function(m, Fn, lower, upper){
   #find max of weights
   maxplace <- which.max( Fn( ((1:m)/m)) - 
                            Fn( ((0:(m-1))/m) )  )
+  maxplace
 }
 
 #Function to generate the constraint matrix 
@@ -136,6 +139,7 @@ constraintMat <- function( m, maxplace){
                    m-maxplace,m,byrow=TRUE))
   )
   Amat <- t(A)
+  Amat
 }
 
 #Function to solve for the weight vector	
@@ -155,6 +159,7 @@ solveWeights <- function(m, Fn, lower, upper, Dmat, dvec){
   #make sure the weights sum to 1
   wsum <- sum(w.hat)
   w.hat <- w.hat / wsum
+  w.hat
 }	
 ##################################################################################
 
@@ -462,12 +467,26 @@ umd <- function(data, bound.type="sd", fix.lower=NA, fix.upper=NA, crit="CN",
 ```{r,eval=TRUE}
 library(SC19030)
 h10<-c(30.4, 18.3, 12.7, 12.8, 15.2, 7.5, 14.9, 16.7, 8.9, 15.8, 10.1, 9.5, 21.6, 6.6, 10.9, 10.6, 10.2, 14.4, 18.8, 15.9, 16.2, 15.6, 14.4, 15.2, 9.7, 17.6, 9.5, 14.3, 10.5, 15.1, 10.8, 13.9,17.4, 8.1, 9.9, 6.5, 19.7, 8.2, 13.9, 14.3, 13.6, 17.3, 16.6, 7.5, 8.1, 17.0, 14.9, 5.6, 14.5, 14.6, 15.3, 13.6, 10.6, 14.5, 13.4, 18.9, 8.1)
+
+## mOpt.CN
+mOpt.CN(h10,diag(seq(1,57,by=1),nrow=57,ncol=57))
+## maxWeight
+n <- length(h10)
+delta <- sd(h10)/ sqrt(n)
+lower<- min(h10) - delta
+upper<- max(h10) + delta
+tdata <- (h10-lower)/(upper-lower)	
+Fn<-ecdf(tdata)
+print(maxWeight(7,Fn))
+## constraintMat
+print(constraintMat(7,3))
+## umd
 umd.h10.CN<-umd(h10, bound.type="sd", crit="CN")
+umd.h10.CN
 y<-seq(0,40,by=0.05)
 hist(h10,breaks=9,freq=FALSE,main="Density estimates of windspeed",xlim=c(0,40),ylim=c(0,0.15),xlab="Windspeed",ylab="Density")
 lines(y,umd.h10.CN$dumd(y),type='l',col='red')
 lines(density(h10),col='black')
-legend("topright",c("CN","Gaussian Kernel"),col=c("red","black"),lty=1,lwd=2)  
 ```
 
 The results show that using density estimatin with Gaussian kernel, there would be a spurious peak in the tail, which is not what we want, and using _umd_ function achieve the density estimation with unimodal constranit.

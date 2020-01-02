@@ -19,4 +19,5 @@ maxWeight <- function(m, Fn, lower, upper){
   #find max of weights
   maxplace <- which.max( Fn( ((1:m)/m)) - 
                            Fn( ((0:(m-1))/m) )  )
+  maxplace
 }

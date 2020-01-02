@@ -42,4 +42,5 @@ solveWeights <- function(m, Fn, lower, upper, Dmat, dvec){
   #make sure the weights sum to 1
   wsum <- sum(w.hat)
   w.hat <- w.hat / wsum
+  w.hat
 }	

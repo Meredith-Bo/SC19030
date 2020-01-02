@@ -22,4 +22,5 @@ constraintMat <- function( m, maxplace){
                    m-maxplace,m,byrow=TRUE))
   )
   Amat <- t(A)
+  Amat
 }
